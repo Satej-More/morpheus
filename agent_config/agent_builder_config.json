@@ -1,0 +1,142 @@
+{
+  "agent_name": "morpheus-sre-agent",
+  "display_name": "Morpheus SRE Agent",
+  "description": "Autonomous Site Reliability Engineering agent for incident detection, diagnosis, and resolution.",
+  "model": "gemini-2.5-flash",
+  "tools": [
+    {
+      "name": "dynatrace_dql",
+      "description": "Execute a DQL query against Dynatrace Grail to fetch logs, metrics, traces, or events.",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "The DQL query to execute"
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "description": "Query timeout in milliseconds",
+          "default": 20000
+        }
+      }
+    },
+    {
+      "name": "dynatrace_get_problems",
+      "description": "Retrieve active or historical problems from the Dynatrace Problems API.",
+      "parameters": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "OPEN",
+            "RESOLVED"
+          ],
+          "default": "OPEN"
+        }
+      }
+    },
+    {
+      "name": "dynatrace_get_entities",
+      "description": "Get service entities and topology from Dynatrace.",
+      "parameters": {
+        "service_name": {
+          "type": "string",
+          "description": "Name of the service to query"
+        }
+      }
+    },
+    {
+      "name": "slack_post_incident",
+      "description": "Post a structured incident notification to Slack.",
+      "parameters": {
+        "incident_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string"
+        },
+        "root_cause": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number"
+        }
+      }
+    },
+    {
+      "name": "github_create_issue",
+      "description": "Create a GitHub issue for the incident with full forensic context.",
+      "parameters": {
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mongodb_find_similar",
+      "description": "Search historical incident memory for similar past incidents.",
+      "parameters": {
+        "service": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mongodb_save_incident",
+      "description": "Persist incident data and investigation results to MongoDB.",
+      "parameters": {
+        "incident_data": {
+          "type": "object"
+        }
+      }
+    }
+  ],
+  "system_instruction": "You are Morpheus, an autonomous SRE agent. Investigate production incidents step by step: (1) Get problem context, (2) Query error logs via DQL, (3) Check recent deployments, (4) Search historical memory, (5) Generate hypotheses, (6) Validate with metrics, (7) Take action.",
+  "google_cloud_project": "${GOOGLE_CLOUD_PROJECT}",
+  "google_cloud_location": "europe-west1",
+  "mcp_servers": [
+    {
+      "id": "dynatrace-mcp",
+      "displayName": "Dynatrace MCP Server",
+      "description": "Official Dynatrace observability MCP server \u2014 28 tools for DQL, problems, metrics, logs, entities",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@dynatrace-oss/dynatrace-mcp-server@latest"
+      ],
+      "env": {
+        "DT_ENVIRONMENT": "${DYNATRACE_API_URL}",
+        "DT_API_TOKEN": "${DYNATRACE_API_TOKEN}"
+      },
+      "tools": [
+        "execute_dql",
+        "list_problems",
+        "get_entities",
+        "generate_dql_from_natural_language",
+        "explain_dql_in_natural_language",
+        "get_environment_info",
+        "list_vulnerabilities",
+        "get_kubernetes_events"
+      ]
+    }
+  ],
+  "partner_track": "Dynatrace",
+  "hackathon": "Google Cloud Rapid Agent Hackathon"
+}
