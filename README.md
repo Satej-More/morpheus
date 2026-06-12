@@ -3,7 +3,9 @@
 > **Google Cloud Rapid Agent Hackathon — Dynatrace Track**
 > Deadline: June 11, 2026
 
-[![Demo](https://img.shields.io/badge/▶_Watch_Demo-YouTube-FF0000?style=for-the-badge)](https://youtube.com/YOUR_VIDEO_LINK](https://youtu.be/mM0O3Pm51gM?si=b2_v_ZppK9vQlSmb))
+
+[![Watch Demo](https://img.shields.io/badge/▶%20Watch%20Demo-YouTube-FF0000?style=for-the-badge)](https://youtu.be/mM0O3Pm51gM?si=b2_v_ZppK9vQlSmb)
+
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
 **Morpheus reduces Mean Time To Resolution from 38 minutes to under 3 minutes — autonomously.**
